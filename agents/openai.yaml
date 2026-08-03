@@ -1,0 +1,6 @@
+interface:
+  display_name: "拼多多全复刻模式"
+  short_description: "按2026年7月23日节点高保真复刻竞品主图"
+  default_prompt: "使用 $pdd-full-replica 按7月23日节点执行拼多多竞品主图全复刻。"
+policy:
+  allow_implicit_invocation: false

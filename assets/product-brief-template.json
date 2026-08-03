@@ -1,0 +1,82 @@
+{
+  "job_id": "replace-with-task-id",
+  "mode": "generate",
+  "platform": "pinduoduo",
+  "purpose": "商品主图",
+  "canvas": {"aspect_ratio": "1:1", "width": 1024, "height": 1024},
+  "inputs": {
+    "target_effect_images": ["input/competitor/reference.jpg"],
+    "own_product_images": ["input/product/product.png"],
+    "reference_role": "target_effect_for_reverse_engineering",
+    "generation_image_inputs": "own_product_only"
+  },
+  "transformation": {
+    "strategy": "replace_product_only_preserve_target_visual",
+    "preserve_reference_marketing_copy": true,
+    "preserve_reference_promotional_copy": true,
+    "preserve_reference_layout": true,
+    "preserve_reference_props_and_effects": true,
+    "auto_rewrite_reference_claims": false
+  },
+  "product": {
+    "brand": "",
+    "name": "",
+    "variant": "",
+    "quantity": null,
+    "specification": "",
+    "claims": [],
+    "package_text_lock": true,
+    "product_shape_lock": true
+  },
+  "reference_copy": {
+    "exact_visible_text": [],
+    "preserve_original_wording": true,
+    "preserve_punctuation_numbers_and_linebreaks": true
+  },
+  "must_keep": [
+    "目标效果图的画外文案、构图、场景、道具和特效",
+    "产品事实图的外形、品牌、包装、主文字、图案和颜色"
+  ],
+  "must_not_include": [
+    "参考产品包装覆盖真实产品包装",
+    "额外商品",
+    "产品变形",
+    "核心文案错字或乱码",
+    "水印",
+    "二维码"
+  ],
+  "analysis": {
+    "required_dimensions": ["subject", "style", "color", "lighting", "composition", "camera", "material", "resolution", "details", "keywords"],
+    "require_text_inventory": true,
+    "require_element_coverage_table": true,
+    "require_product_fact_lock": true,
+    "mark_confidence": true
+  },
+  "output": {
+    "directory": "C:\\Users\\admin\\Desktop\\拼多多产品数据整理\\OutputIamge",
+    "records_directory": "run_records",
+    "final_images_only": true,
+    "generate_images": true,
+    "use_two_pass_composite": false,
+    "generate_execution_log": true
+  },
+  "qa_policy": {
+    "decision_levels": ["PASSED", "PASSED_WITH_NOTES", "REJECTED"],
+    "blocking": ["product_count_and_geometry", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
+    "advisory": ["unreadable_micro_package_text", "minor_non_core_decoration"]
+  },
+  "generation": {
+    "provider": "dreamina",
+    "agent_mode": true,
+    "command": "image2image",
+    "model_version": "5.0Pro",
+    "ratio": "1:1",
+    "resolution_type": "1k",
+    "generate_num": 1,
+    "poll_seconds": 30,
+    "input_mode": "own_product_only",
+    "competitor_image_upload": false,
+    "allow_model_fallback": false,
+    "input_order": ["own_product_source_of_truth"]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "canvas": {
+    "width": 1024,
+    "height": 1024,
+    "background": "generated/background.png",
+    "output": "generated/final.png"
+  },
+  "layers": [
+    {
+      "type": "image",
+      "name": "product_01",
+      "path": "../input/product/product.png",
+      "center": [
+        0.5,
+        0.64
+      ],
+      "width_ratio": 0.46,
+      "rotation": 0,
+      "opacity": 1.0,
+      "shadow": {
+        "enabled": true,
+        "offset": [
+          0.012,
+          0.018
+        ],
+        "blur_ratio": 0.025,
+        "opacity": 0.3
+      }
+    },
+    {
+      "type": "text",
+      "name": "text_region_01",
+      "text": "精确文案",
+      "box": [
+        0.08,
+        0.08,
+        0.84,
+        0.16
+      ],
+      "font_path": "",
+      "font_size": 72,
+      "min_font_size": 28,
+      "fill": "#FFFFFF",
+      "stroke_width": 2,
+      "stroke_fill": "#000000",
+      "align": "center",
+      "line_spacing": 8
+    }
+  ]
+}

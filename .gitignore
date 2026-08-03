@@ -1,0 +1,7 @@
+tasks/
+run_records/
+history/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
