@@ -16,6 +16,12 @@
   },
   "image_extensions": [".png", ".jpg", ".jpeg", ".webp", ".bmp"],
   "match_mode": "auto",
+  "product_image_roles": {
+    "mode": "primary_first_details_rest",
+    "primary_name_prefix": "00_",
+    "require_exactly_one_primary": true,
+    "details_for_analysis_only": true
+  },
   "allow_single_product_for_all": true,
   "allow_fallback_product": false,
   "fallback_product": "default.png",

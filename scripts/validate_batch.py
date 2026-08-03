@@ -35,6 +35,14 @@ def main() -> int:
         warnings.append('竞品图目录中还没有图片')
     if prod_count == 0:
         warnings.append('产品图目录中还没有图片')
+    product_roles = cfg.get('product_image_roles', {})
+    if product_roles.get('mode') == 'primary_first_details_rest' and prod_dir.exists():
+        primary_prefix = str(product_roles.get('primary_name_prefix', '00_')).lower()
+        primary_candidates = [p for p in prod_dir.iterdir() if p.is_file() and p.suffix.lower() in exts and p.name.lower().startswith(primary_prefix)]
+        if product_roles.get('require_exactly_one_primary', True) and len(primary_candidates) != 1:
+            errors.append(f'ProductImage 必须有且只有一张以 {primary_prefix} 开头的主产品图，当前找到 {len(primary_candidates)} 张')
+        if product_roles.get('details_for_analysis_only') is not True:
+            errors.append('product_image_roles.details_for_analysis_only 必须为 true')
     if engine.get('provider') != 'dreamina':
         errors.append('generation_engine.provider 必须为 dreamina')
     if engine.get('command') != 'image2image':

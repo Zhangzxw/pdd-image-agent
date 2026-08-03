@@ -42,6 +42,7 @@ class TaskItem:
     task_id: str
     competitor_image: str
     product_image: str
+    product_detail_images: list[str]
     match_reason: str
     output_stem: str
     status: str
@@ -64,6 +65,17 @@ def main() -> int:
         raise SystemExit(f'竞品图目录中未找到图片: {competitor_dir}')
     if not products:
         raise SystemExit(f'产品图目录中未找到图片: {product_dir}')
+    product_roles = config.get('product_image_roles', {})
+    bundle_mode = product_roles.get('mode') == 'primary_first_details_rest'
+    primary_global = None
+    detail_globals = []
+    if bundle_mode:
+        primary_prefix = str(product_roles.get('primary_name_prefix', '00_')).lower()
+        primary_candidates = [p for p in products if p.name.lower().startswith(primary_prefix)]
+        if len(primary_candidates) != 1:
+            raise SystemExit(f'ProductImage 必须有且只有一张以 {primary_prefix} 开头的主产品图，当前找到 {len(primary_candidates)} 张')
+        primary_global = primary_candidates[0]
+        detail_globals = [p for p in products if p != primary_global]
     fallback_name = config.get('fallback_product', '')
     fallback_path = product_dir / fallback_name if fallback_name else None
     has_single_global = len(products) == 1 and bool(config.get('allow_single_product_for_all', True))
@@ -76,10 +88,15 @@ def main() -> int:
     for index, comp in enumerate(competitors, start=1):
         comp_key = comp.stem.lower()
         matched_product = None
+        matched_details = []
         reason = ''
         note = ''
         status = 'ready'
-        if has_single_global:
+        if bundle_mode:
+            matched_product = primary_global
+            matched_details = detail_globals
+            reason = 'primary_product_for_all_details_analysis_only'
+        elif has_single_global:
             matched_product = products[0]
             reason = 'single_product_for_all'
         elif comp_key in product_map:
@@ -94,13 +111,14 @@ def main() -> int:
             note = '未找到匹配产品图'
         task_id = f'{index:03d}_{safe_stem(comp.stem)}'
         output_stem = safe_stem(comp.stem)
-        item = TaskItem(task_id, str(comp), str(matched_product) if matched_product else '', reason, output_stem, status, note)
+        item = TaskItem(task_id, str(comp), str(matched_product) if matched_product else '', [str(p) for p in matched_details], reason, output_stem, status, note)
         manifest.append(item)
         if status != 'ready':
             continue
         task_dir = tasks_dir / task_id
         comp_target = copy_unique(comp, task_dir / 'input' / 'competitor')
         prod_target = copy_unique(matched_product, task_dir / 'input' / 'product')
+        detail_targets = [copy_unique(p, task_dir / 'input' / 'product_details') for p in matched_details]
         brief = json.loads(json.dumps(template))
         brief['job_id'] = task_id
         brief['platform'] = config.get('platform', 'pinduoduo')
@@ -111,6 +129,7 @@ def main() -> int:
         target_rel = str(comp_target.relative_to(task_dir)).replace('\\', '/')
         brief['inputs']['target_effect_images'] = [target_rel]
         brief['inputs']['own_product_images'] = [str(prod_target.relative_to(task_dir)).replace('\\', '/')]
+        brief['inputs']['own_product_detail_images'] = [str(p.relative_to(task_dir)).replace('\\', '/') for p in detail_targets]
         brief['must_keep'] = config.get('must_keep', brief['must_keep'])
         brief['must_not_include'] = config.get('must_not_include', brief['must_not_include'])
         brief['generation'] = json.loads(json.dumps(config.get('generation_engine', brief.get('generation', {}))))
@@ -134,13 +153,15 @@ def main() -> int:
     manifest_json = [asdict(x) for x in manifest]
     save_json(tasks_dir / 'batch_manifest.json', manifest_json)
     with (tasks_dir / 'batch_manifest.csv').open('w', newline='', encoding='utf-8-sig') as f:
-        writer = csv.DictWriter(f, fieldnames=['task_id','competitor_image','product_image','match_reason','output_stem','status','note'])
+        writer = csv.DictWriter(f, fieldnames=['task_id','competitor_image','product_image','product_detail_images','match_reason','output_stem','status','note'])
         writer.writeheader()
         for row in manifest_json:
             writer.writerow(row)
     summary = {
         'total_competitors': len(competitors),
         'total_products': len(products),
+        'primary_product': str(primary_global) if primary_global else '',
+        'analysis_only_detail_count': len(detail_globals),
         'ready_tasks': sum(1 for x in manifest if x.status == 'ready'),
         'skipped_tasks': sum(1 for x in manifest if x.status != 'ready'),
         'manifest_json': str(tasks_dir / 'batch_manifest.json'),

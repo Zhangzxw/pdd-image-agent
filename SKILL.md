@@ -15,6 +15,7 @@ description: Restore and run the 2026-07-23 high-fidelity Pinduoduo competitor-i
 - 技能内部记录：相对于本技能目录的 `tasks`、`run_records`、`history`
 - `EnterImage` 只用于视觉反推，不上传即梦。
 - `ProductImage` 是 Dreamina 唯一图片输入与产品事实来源。
+- `ProductImage` 中以 `00_` 开头的唯一图片是全部任务的主产品图与唯一 Dreamina 图片输入；其余图片作为产品细节事实图，仅供本地分析，不上传即梦。
 
 ## 0723 复刻合同
 
