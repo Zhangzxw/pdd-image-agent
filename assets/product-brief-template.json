@@ -3,7 +3,7 @@
   "mode": "generate",
   "platform": "pinduoduo",
   "purpose": "商品主图",
-  "canvas": {"aspect_ratio": "1:1", "width": 1024, "height": 1024},
+  "canvas": {"aspect_ratio": "1:1", "width": 2048, "height": 2048},
   "inputs": {
     "target_effect_images": ["input/competitor/reference.jpg"],
     "own_product_images": ["input/product/product.png"],
@@ -28,6 +28,49 @@
     "package_text_lock": true,
     "product_shape_lock": true
   },
+  "product_identity_lock": {
+    "enabled": true,
+    "authority_role": "primary_product_image",
+    "prompt_marker": "[PRODUCT_IDENTITY_LOCK]",
+    "preserve_source_viewpoint": true,
+    "allowed_transforms": ["uniform_scale", "translation", "rigid_2d_rotation", "bounded_lighting_blend"],
+    "protected_fields": ["geometry", "logo", "readable_packaging_text", "color", "material", "label_layout"],
+    "protected_texts": [],
+    "protected_logo": "",
+    "geometry_anchor": "",
+    "material_anchor": "",
+    "viewpoint_anchor": "",
+    "visual_qa_required": true,
+    "ocr_hard_gate": false
+  },
+  "composition_lock": {
+    "enabled": true,
+    "prompt_marker": "[COMPOSITION_LOCK]",
+    "composition_archetype": {},
+    "visual_mass_map": {},
+    "negative_space_map": {},
+    "composition_anchor_lines": {},
+    "visual_flow_path": [],
+    "occlusion_graph": [],
+    "depth_layers": []
+  },
+  "image2image_source_authority": {
+    "enabled": true,
+    "single_product_master": true,
+    "same_master_product_for_multipack": true
+  },
+  "lighting_application_boundary": {
+    "enabled": true,
+    "allowed": ["surface_highlight", "light_dark_transition", "rim_light", "contact_shadow", "cast_shadow"],
+    "protected": ["package_base_color", "printed_content", "logo_color", "label_boundary", "material_base", "opacity"]
+  },
+  "core_visibility_zone": {
+    "enabled": true,
+    "logo_zone": {},
+    "product_name_zone": {},
+    "specification_zone": {},
+    "primary_pattern_zone": {}
+  },
   "reference_copy": {
     "exact_visible_text": [],
     "preserve_original_wording": true,
@@ -35,13 +78,14 @@
   },
   "must_keep": [
     "目标效果图的画外文案、构图、场景、道具和特效",
-    "产品事实图的外形、品牌、包装、主文字、图案和颜色"
+    "产品事实图的外形、品牌、包装、可辨认文字、LOGO、标签布局、材质、图案和颜色"
   ],
   "must_not_include": [
     "参考产品包装覆盖真实产品包装",
     "额外商品",
     "产品变形",
     "核心文案错字或乱码",
+    "自有产品LOGO扭曲、可辨认包装文字错乱或模糊、标签变形、产品主体虚焦或材质错误",
     "水印",
     "二维码"
   ],
@@ -62,7 +106,7 @@
   },
   "qa_policy": {
     "decision_levels": ["PASSED", "PASSED_WITH_NOTES", "REJECTED"],
-    "blocking": ["product_count_and_geometry", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
+    "blocking": ["product_count_and_geometry", "product_identity_lock", "composition_lock", "lighting_application_boundary", "core_visibility_zone", "multiproduct_identity_consistency", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
     "advisory": ["unreadable_micro_package_text", "minor_non_core_decoration"]
   },
   "generation": {
@@ -71,7 +115,7 @@
     "command": "image2image",
     "model_version": "5.0Pro",
     "ratio": "1:1",
-    "resolution_type": "1k",
+    "resolution_type": "2k",
     "generate_num": 1,
     "poll_seconds": 30,
     "input_mode": "own_product_only",

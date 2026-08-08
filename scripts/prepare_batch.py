@@ -124,8 +124,8 @@ def main() -> int:
         brief['platform'] = config.get('platform', 'pinduoduo')
         brief['purpose'] = config.get('purpose', '商品主图')
         brief['canvas']['aspect_ratio'] = config.get('default_canvas', {}).get('aspect_ratio', '1:1')
-        brief['canvas']['width'] = config.get('default_canvas', {}).get('width', 1024)
-        brief['canvas']['height'] = config.get('default_canvas', {}).get('height', 1024)
+        brief['canvas']['width'] = config.get('default_canvas', {}).get('width', 2048)
+        brief['canvas']['height'] = config.get('default_canvas', {}).get('height', 2048)
         target_rel = str(comp_target.relative_to(task_dir)).replace('\\', '/')
         brief['inputs']['target_effect_images'] = [target_rel]
         brief['inputs']['own_product_images'] = [str(prod_target.relative_to(task_dir)).replace('\\', '/')]
@@ -144,6 +144,11 @@ def main() -> int:
         brief['generation']['input_mode'] = 'own_product_only'
         brief['generation']['competitor_image_upload'] = False
         brief['generation']['input_order'] = ['own_product_source_of_truth']
+        brief.setdefault('product_identity_lock', {}).update(json.loads(json.dumps(config.get('product_identity_lock', {}))))
+        brief['composition_lock'] = json.loads(json.dumps(config.get('composition_lock', brief.get('composition_lock', {}))))
+        brief['image2image_source_authority'] = json.loads(json.dumps(config.get('image2image_source_authority', brief.get('image2image_source_authority', {}))))
+        brief['lighting_application_boundary'] = json.loads(json.dumps(config.get('lighting_application_boundary', brief.get('lighting_application_boundary', {}))))
+        brief['core_visibility_zone'] = json.loads(json.dumps(config.get('core_visibility_zone', brief.get('core_visibility_zone', {}))))
         brief['output']['directory'] = str(output_dir)
         brief['output']['records_directory'] = str(records_dir)
         brief['output']['final_images_only'] = True
