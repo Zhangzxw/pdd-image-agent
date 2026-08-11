@@ -21,8 +21,8 @@
 
 ## 产品身份与图生图边界
 
-- 图片1是唯一产品外观母版；竞品图不上传即梦，产品详情图只供本地核对。
-- Prompt 首段使用 [product-identity-lock.md](product-identity-lock.md) 的固定段，并紧接 `protected_texts / protected_logo / geometry_anchor / material_anchor / viewpoint_anchor` 实际值。
+- 图片1始终是唯一产品外观母版。标准模式不上传竞品图；双参考高精度模式上传图片2作为二维构图母版，并按 [dual-reference-high-precision-mode.md](dual-reference-high-precision-mode.md) 写入双参考权威声明。产品详情图始终只供本地核对。
+- 标准模式首段使用 [product-identity-lock.md](product-identity-lock.md)；双参考高精度模式先写 `[DUAL_REFERENCE_AUTHORITY]`，紧接产品身份锁与 `protected_texts / protected_logo / geometry_anchor / material_anchor / viewpoint_anchor` 实际值。
 - 竞品瓶型、管型、瓶盖、泵头、厚度、标签、品牌色和包装图案不可迁移；竞品只提供二维构图关系。
 - 光影只允许改变自然高光、明暗过渡、轮廓光、接触阴影和落地投影；不得改变包装底色、Logo颜色、印刷内容、标签边界、材质本色或透明度，不得套场景统一滤镜。
 - 微型不可辨说明尽最大程度保留位置、行数、颜色和印刷密度，不主动改写、不虚构可读内容。
@@ -64,8 +64,9 @@
 
 - 画外文字默认1种字体，硬上限2种；首选PDDZHT，无法准确调用时使用拼多多正黑体风格粗黑无衬线体。只有目标图存在重要第二字体层级时启用第二种。
 - 包装原生字体不计入画外字体数量，禁止修改或替换。
-- 只允许映射画外文字的填充/描边/阴影和底部框体的填充/边框/原有渐变色。产品、背景、人物、道具、图标和特效不得借配色优化改色。
-- 每个可变颜色记录“目标原色 → 产品取样色 → 最终映射色”，保持清晰对比。
+- 标准模式只允许映射画外文字的填充/描边/阴影和底部框体的填充/边框/原有渐变色。
+- 双参考高精度模式按 [dual-reference-high-precision-mode.md](dual-reference-high-precision-mode.md) 额外允许背景色系与徽章/勋章色系适配产品色板；只换颜色，不改背景几何、纹理、光影、景深，不改徽章轮廓、图标、位置、材质和压印。产品、人物、道具和 KEY 邻接细节不得借配色优化改色。
+- 每个可变颜色记录“目标原色 → 产品取样色 → 最终映射色”，保持清晰对比；双参考模式同时记录结构、材质与光影保持证据。
 
 ## 竞品排除与负面约束
 

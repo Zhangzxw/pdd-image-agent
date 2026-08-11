@@ -47,6 +47,50 @@
   "preserve_reference_props_and_effects": true,
   "auto_rewrite_reference_claims": false,
   "generation_input_mode": "own_product_only",
+  "product_identity_lock": {
+    "enabled": true,
+    "authority_role": "primary_product_image",
+    "prompt_marker": "[PRODUCT_IDENTITY_LOCK]",
+    "preserve_source_viewpoint": true,
+    "allowed_transforms": ["uniform_scale", "translation", "rigid_2d_rotation", "bounded_lighting_blend"],
+    "protected_fields": ["geometry", "logo", "readable_packaging_text", "color", "material", "label_layout"],
+    "visual_qa_required": true,
+    "ocr_hard_gate": false
+  },
+  "composition_lock": {
+    "enabled": true,
+    "prompt_marker": "[COMPOSITION_LOCK]",
+    "required_fields": ["composition_archetype", "visual_mass_map", "negative_space_map", "composition_anchor_lines", "visual_flow_path", "occlusion_graph", "depth_layers"],
+    "competitor_packaging_structure_transfer": false,
+    "generic_aesthetic_rules_must_not_override_reference": true
+  },
+  "image2image_source_authority": {
+    "enabled": true,
+    "single_product_master": true,
+    "same_master_product_for_multipack": true,
+    "competitor_image_upload": false
+  },
+  "lighting_application_boundary": {
+    "enabled": true,
+    "allowed": ["surface_highlight", "light_dark_transition", "rim_light", "contact_shadow", "cast_shadow"],
+    "protected": ["package_base_color", "printed_content", "logo_color", "label_boundary", "material_base", "opacity"]
+  },
+  "core_visibility_zone": {
+    "enabled": true,
+    "protected_regions": ["logo_zone", "product_name_zone", "specification_zone", "primary_pattern_zone"]
+  },
+  "font_policy": {
+    "enabled": true,
+    "scope": "external_text_only",
+    "max_external_font_families": 2,
+    "max_external_font_families_is_hard_constraint": true,
+    "default_external_font_families": 1,
+    "primary_font": "PDDZHT",
+    "primary_font_display_name": "拼多多正黑体",
+    "fallback_font_style": "拼多多正黑体风格的粗黑无衬线体",
+    "exclude_native_packaging_fonts": true,
+    "reject_when_external_font_count_exceeds_limit": true
+  },
   "use_two_pass_composite": false,
   "repair_strategy": "refine_prompt_and_regenerate_5_0_pro",
   "auto_retry": {
@@ -65,7 +109,7 @@
   },
   "qa_policy": {
     "decision_levels": ["PASSED", "PASSED_WITH_NOTES", "REJECTED"],
-    "blocking": ["product_count_and_geometry", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
+    "blocking": ["product_count_and_geometry", "product_identity_lock", "composition_lock", "lighting_application_boundary", "core_visibility_zone", "multiproduct_identity_consistency", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
     "advisory": ["unreadable_micro_package_text", "minor_non_core_decoration"]
   },
   "execution_log": {
@@ -74,7 +118,7 @@
     "per_task": true,
     "batch_summary": true
   },
-  "default_canvas": {"aspect_ratio": "1:1", "width": 1024, "height": 1024},
+  "default_canvas": {"aspect_ratio": "1:1", "width": 2048, "height": 2048},
   "default_output_format": "png",
   "platform": "pinduoduo",
   "purpose": "商品主图",
@@ -85,7 +129,7 @@
     "executable": "dreamina",
     "model_version": "5.0Pro",
     "ratio": "1:1",
-    "resolution_type": "1k",
+    "resolution_type": "2k",
     "generate_num": 1,
     "poll_seconds": 30,
     "download_results": true,
@@ -98,7 +142,7 @@
   "must_keep": [
     "目标效果图的画外促销与营销文案",
     "目标效果图的构图、数量关系、场景、道具和特效",
-    "自有产品外形、品牌、包装、主文字、图案和颜色"
+    "自有产品外形、品牌、包装、可辨认文字、LOGO、标签布局、材质、图案和颜色"
   ],
   "must_not_include": [
     "目标图参考产品包装替换自有产品包装",
@@ -107,6 +151,7 @@
     "水印",
     "二维码",
     "产品变形",
-    "核心文案错字或乱码"
+    "核心文案错字或乱码",
+    "自有产品LOGO扭曲、可辨认包装文字错乱或模糊、标签变形、产品主体虚焦或材质错误"
   ]
 }
