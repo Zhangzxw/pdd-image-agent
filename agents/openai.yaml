@@ -1,6 +1,6 @@
 interface:
-  display_name: "拼多多全复刻模式"
-  short_description: "通过编号选择单参考全复刻或双参考高精度模式"
-  default_prompt: "使用 $pdd-full-replica，并先让我从“1. 拼多多全复刻模式”和“2. 竞品双参考高精度模式”中选择。"
+  display_name: "竞品双参考高精度复刻"
+  short_description: "双参考锁定产品身份与竞品构图，保持明亮高质感配色与层级"
+  default_prompt: "使用 $pdd-full-replica 扫描当前批次，确认冲突替换后直接生成双参考高精度复刻图。"
 policy:
   allow_implicit_invocation: false

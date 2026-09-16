@@ -108,7 +108,7 @@
     "attempt_file_naming": true
   },
   "qa_policy": {
-    "decision_levels": ["PASSED", "PASSED_WITH_NOTES", "REJECTED"],
+    "decision_levels": ["PASSED", "PASSED_WITH_NOTES", "REVIEW_REQUIRED", "REJECTED"],
     "blocking": ["product_count_and_geometry", "product_identity_lock", "composition_lock", "lighting_application_boundary", "core_visibility_zone", "multiproduct_identity_consistency", "brand_and_primary_package_facts", "core_marketing_text", "composition_scene_and_style"],
     "advisory": ["unreadable_micro_package_text", "minor_non_core_decoration"]
   },

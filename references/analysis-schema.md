@@ -20,6 +20,8 @@
 - 平台、活动类型、类目、商业摄影/3D渲染/插画比例。
 - 情绪、氛围、消费心智、高转化卖点和一秒阅读顺序。
 - 技法关键词、后期锐化、柔光、调色、边缘处理和广告完成度。
+- 按 [competitive-visual-analysis.md](competitive-visual-analysis.md) 建立 `competitive_visual_strategy`：竞品风格标签及证据、拟复刻图风格标签、预期风格偏移、`attention_path_0_3s`、最强卖点钩子、`hook_retention_plan`、手机缩略图前三抓眼元素、七类生成前风险矩阵和P0–P3优化队列。
+- 生成前必须把“竞品可见事实 / 目标产品身份约束 / 拟复刻策略”分栏记录，不得把预期结果写成已生成事实。
 
 ## 4. 配色
 
@@ -29,6 +31,8 @@
 - 产品包装色板至少记录：主色、辅色、强调色、中性色、各颜色来源区域、建议 HEX、覆盖比例和置信度。
 - 透明/白色产品优先从标签、瓶盖、Logo、主图案取色，不把透明背景或白底误判为包装主色。
 - 建立颜色映射表：仅覆盖画外文字填充/描边/阴影和底部框体填充/边框/原有渐变颜色。
+- 每个允许变色元素额外记录 `hue_family / luminance_role / saturation_role`，保持参考图高、中、低明度关系。背景默认浅亮；标题、横幅与徽章使用目标色板的明亮阶，深色只作小面积描边或分隔。
+- 建立视觉优先级：`主产品/主标题/次标题 > 横幅/徽章/勋章 > 背景`，记录每级的面积、对比、饱和度与视觉落点。
 
 ## 5. 光影与镜头
 
@@ -36,11 +40,25 @@
 - 商品高光、轮廓光、接触阴影、台面倒影和背景明暗层级。
 - 机位高度、俯仰角、左右视角、焦段感、透视、景深和焦点位置。
 
+### 5.1 参考图分区亮度取样
+
+建立 `luminance_region_map`。坐标使用归一化 `[left, top, right, bottom]`，允许同一区域使用多个矩形框；矩形必须避开不属于该区域的大面积异色元素。至少按实际存在情况记录：
+
+- `global`：整张图。
+- `background`：主要浅色背景/白场，可用多个无遮挡框。
+- `product`：每件竞品主体边界框；用于保持成图相同位置的光影质量，不迁移竞品包装事实。
+- `headline`：主标题和次标题的联合区域。
+- `banner`：主横幅及次横幅。
+- `badge`：主要徽章/勋章，可记录多个框。
+- `bottom_bar`：底部通栏。
+
+每区记录参考 `mean_luma / p50_luma / p90_luma / dark_ratio`，并标注 `luminance_role=HIGH|MID|LOW`、允许色相家族和禁止暗色家族。亮度取样用于保持视觉质量，不要求文字笔画逐像素相同。
+
 ## 6. 构图与材质
 
 - 视觉重心、黄金区域、主体/文字占比、元素坐标区间和层级关系。
 - 产品、台面、家具、纸张、金属、塑料、玻璃、徽章、光效的透明度、粗糙度、反射和边缘锐度。
-- 按 [composition-lock.md](composition-lock.md) 建立 `composition_archetype / visual_mass_map / negative_space_map / composition_anchor_lines / visual_flow_path / occlusion_graph / depth_layers`。竞品物理包装结构不可复刻；只提取其二维构图关系。
+- 按 [composition-lock.md](composition-lock.md) 建立 `composition_archetype / visual_mass_map / negative_space_map / composition_anchor_lines / visual_flow_path / occlusion_graph / depth_layers / product_pose_lock / visual_mass_lock / critical_scene_structure_lock`。竞品包装身份不可复刻；其姿态、透视、开瓶/倾倒关系和场景结构可作为构图母版。
 
 ## 7. 产品事实图锁定
 
@@ -48,9 +66,11 @@
 
 产品本体颜色和包装颜色属于绝对锁定项，禁止为了“统一配色”对产品调色、换色、套滤镜或改变透明度。
 
-按 [product-identity-lock.md](product-identity-lock.md) 建立 `protected_texts / protected_logo / geometry_anchor / material_anchor / viewpoint_anchor / product_pose_guide`，同时建立 `image2image_source_authority / lighting_application_boundary / core_visibility_zone`。`protected_texts` 必须逐字记录可辨认原文、数字、标点和换行；`protected_logo` 同时记录核心视觉特征词；`material_anchor` 明确包装主体底色、材质本色和表面质感。微型不可辨文字只记录位置、行数、颜色与印刷密度。允许的产品变换为：整体等比例缩放、平移、有边界的自然光影融合，以及不改变源图观察视角的刚性二维平面旋转。
+按 [product-identity-lock.md](product-identity-lock.md) 建立 `protected_texts / protected_logo / geometry_anchor / material_anchor / viewpoint_anchor / pose_mode / product_pose_lock`，同时建立 `image2image_source_authority / lighting_application_boundary / core_visibility_zone`。可辨文字逐字记录，材质和包装本色明确锁定。正面/近正面任务使用刚性二维姿态；横置、倾倒、开瓶、强透视或复杂遮挡使用受控三维姿态。受控三维只改变达到竞品观察关系所需的姿态、真实开口和可见侧面，不得改变产品身份、真实比例、材质与包装拓扑。
 
-`product_pose_guide` 从目标效果图记录：二维倾斜方向与建议角度区间、展示级别、产品高度占比区间、中心区域、顶部/底部位置、遮挡和接触关系。以上参数用于构图引导，不是像素级硬门槛；产品宽度必须服从 `geometry_anchor` 的真实宽高比，不得为了匹配竞品边界框而独立拉伸或压缩。
+另建立包装拓扑锁：`allowed_pack_elements / absent_pack_elements / protected_empty_zones / competitor_packaging_collision_map`。白名单记录目标包装真实存在的分区、图案、徽章、图标、文字栏和组件；空区记录必须保持空白、纯色或连续纹理的区域；碰撞表把竞品显著包装元素逐项标为允许或排除。所有目标不存在的竞品包装元素首轮即进入 Prompt 排除项。
+
+`product_pose_lock` 从竞品图记录：长轴起点/终点、角度与象限、瓶口/瓶盖锚点、底端锚点、标签中心朝向、俯仰/偏航/滚转估计、展示级别、中心区域、遮挡、关键交点和接触关系。再建立 `visual_mass_lock`，同时记录轮廓面积、高对比/不透明标签面积和亮暗质量中心。以上为宽容量化区间；不得用独立拉伸或压缩匹配边界框。
 
 ## 7.1 主体占比锁
 
@@ -59,7 +79,7 @@
 - 默认用参考商品的顶部、底部、宽度和总占画面积约束生成主体；不得只记录中心点或“偏大/偏小”。
 - 边界框与面积是柔性视觉区间，但生成 Prompt 必须写出明确百分比，不得概括成“与参考图大小一致”。
 - 用户说“撑满”“放大主体”“产品和参考一样大”“紧凑靠一起”时启用 `full_bleed_mode=true`：商品建议高度 `95%–110%`，允许顶部或底部轻微出框，双商品可见间隙建议 `0%–2%`，按参考图记录必要重叠率。
-- 满版模式仍服从 `geometry_anchor`：宽度由真实宽高比和整体等比缩放自然得到；禁止独立拉宽、拉高、压扁或改变三维视角。
+- 满版模式仍服从 `geometry_anchor`：宽度由真实宽高比和整体等比缩放自然得到；禁止独立拉宽、拉高、压扁或偏离已锁定的二维/受控三维姿态。
 - 若满版占比与文字区冲突，先按参考图的前后遮挡和出框关系解决，不得静默缩小商品或改写版式。
 
 ## 7.2 产品邻接细节扫描

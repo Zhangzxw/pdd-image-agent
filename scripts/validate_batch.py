@@ -111,8 +111,8 @@ def main() -> int:
             errors.append(f'qa_policy.blocking 必须包含 {required_block}')
     if not execution_log.get('enabled') or not execution_log.get('per_task') or not execution_log.get('batch_summary'):
         errors.append('execution_log 必须启用 per_task 与 batch_summary')
-    if qa_policy.get('decision_levels') != ['PASSED', 'PASSED_WITH_NOTES', 'REJECTED']:
-        errors.append('qa_policy.decision_levels 必须包含 PASSED/PASSED_WITH_NOTES/REJECTED')
+    if qa_policy.get('decision_levels') != ['PASSED', 'PASSED_WITH_NOTES', 'REVIEW_REQUIRED', 'REJECTED']:
+        errors.append('qa_policy.decision_levels 必须包含 PASSED/PASSED_WITH_NOTES/REVIEW_REQUIRED/REJECTED')
     if 'product_identity_lock' not in qa_policy.get('blocking', []):
         errors.append('qa_policy.blocking 必须包含 product_identity_lock')
     generate_num = engine.get('generate_num', 1)
